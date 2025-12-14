@@ -49,3 +49,8 @@ jobs:
         with:
           name: robot-framework-results
           path: results
+
+      - name: AI-based test failure analysis
+        if: always()
+        run: |
+          python ai_module/test_result_analyzer.py

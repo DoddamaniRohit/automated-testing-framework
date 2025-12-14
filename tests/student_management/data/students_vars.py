@@ -12,3 +12,6 @@ with open(csv_path, newline='', encoding='utf-8-sig') as f:
     reader = csv.DictReader(f)
     for r in reader:
         STUDENTS.append([r['name'], r['age'], r['course']])
+
+
+# Demo change to trigger CI
