@@ -1,0 +1,7 @@
+robotframework
+robotframework-seleniumlibrary
+selenium
+robotframework-requests
+robotframework-jsonlibrary
+robotframework-datadriver
+allure-robotframework

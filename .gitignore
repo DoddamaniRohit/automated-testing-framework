@@ -1,0 +1,31 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Robot results
+results/
+
+# IDE
+.vscode/
+.idea/
+
+# OS / Desktop noise
+*.lnk
+*.exe
+*.pdf
+*.jpg
+*.png
+*.pptx
+*.zip
+node_modules/
+desktop.ini
+
+# Ignore everything else outside project
+*
+!demo_app/
+!resources/
+!tests/
+!.github/
+!requirements.txt
+!.gitignore
