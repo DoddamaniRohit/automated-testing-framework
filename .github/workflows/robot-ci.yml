@@ -2,11 +2,9 @@ name: Robot Framework CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   robot-tests:
@@ -29,12 +27,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Run Robot Framework tests
+      # 4. Debug: show test structure (VERY IMPORTANT)
+      - name: Show test directory structure
+        run: |
+          echo "Repo root:"
+          ls -la
+          echo "Tests folder:"
+          ls -la tests
+          echo "Student management:"
+          ls -la tests/student_management
+          echo "Suites:"
+          ls -la tests/student_management/suites
+
+      # 5. Run Robot Framework tests (CORRECT PATH)
       - name: Run Robot Framework tests
         run: |
-          robot -d results tests/student_management
+          robot -d results tests/student_management/suites
 
-      # 5. Upload Robot Framework reports (even if tests fail)
+      # 6. Upload Robot Framework reports
       - name: Upload Robot Framework results
         if: always()
         uses: actions/upload-artifact@v4
