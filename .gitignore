@@ -26,6 +26,9 @@ desktop.ini
 !demo_app/
 !resources/
 !tests/
-!.github/
+
 !requirements.txt
 !.gitignore
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
