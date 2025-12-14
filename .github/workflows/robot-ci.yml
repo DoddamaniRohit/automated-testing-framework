@@ -24,8 +24,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 🔍 Debug step (VERY IMPORTANT – keep this)
-      - name: Show repository structure
+      - name: Show test directory structure
         run: |
           echo "Repo root:"
           ls -la
@@ -36,7 +35,6 @@ jobs:
 
       - name: Run Robot Framework tests
         run: |
-<<<<<<< HEAD
           robot \
             --outputdir results \
             tests/student_management
@@ -47,6 +45,3 @@ jobs:
         with:
           name: robot-results
           path: results
-=======
-          robot -d results tests
->>>>>>> fa2f242 (Fix gitignore and add Robot Framework tests)
