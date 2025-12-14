@@ -21,14 +21,23 @@ results/
 node_modules/
 desktop.ini
 
-# Ignore everything else outside project
+# Ignore everything by default
 *
-!demo_app/
-!resources/
-!tests/
 
+# Allow project folders
+!demo_app/
+!demo_app/**
+
+!resources/
+!resources/**
+
+!tests/
+!tests/**
+
+# Allow root files
 !requirements.txt
 !.gitignore
+
+# Allow GitHub Actions
 !.github/
-!.github/workflows/
-!.github/workflows/*.yml
+!.github/**

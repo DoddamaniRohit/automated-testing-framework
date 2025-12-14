@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head><title>Student App Demo</title></head>
+<body>
+  <h1>Students</h1>
+
+  <button id="add-student" onclick="document.getElementById('form').style.display='block'">
+    Add Student
+  </button>
+
+  <form id="form" style="display:none">
+    <input id="name" placeholder="Name" />
+    <input id="age" placeholder="Age" />
+    <select id="course">
+      <option value="BCA">BCA</option>
+      <option value="BSc">BSc</option>
+    </select>
+    <button type="button" id="submit" onclick="addStudent()">Add</button>
+  </form>
+
+  <ul id="list"></ul>
+
+  <script>
+    function addStudent() {
+      const name = document.getElementById('name').value;
+      const li = document.createElement('li');
+      li.textContent = name;
+      document.getElementById('list').appendChild(li);
+      document.getElementById('form').style.display='none';
+    }
+  </script>
+</body>
+</html>

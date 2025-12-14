@@ -2,9 +2,9 @@ name: Robot Framework CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   robot-tests:
@@ -36,6 +36,7 @@ jobs:
 
       - name: Run Robot Framework tests
         run: |
+<<<<<<< HEAD
           robot \
             --outputdir results \
             tests/student_management
@@ -46,3 +47,6 @@ jobs:
         with:
           name: robot-results
           path: results
+=======
+          robot -d results tests
+>>>>>>> fa2f242 (Fix gitignore and add Robot Framework tests)
