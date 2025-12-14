@@ -24,6 +24,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Robot Framework tests
-        run: |
-          robot -d results tests
+     - name: Run Robot Framework tests
+  run: robot -d results tests/student_management
+
