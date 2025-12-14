@@ -11,45 +11,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Start demo app server (CRITICAL)
+      # 🔑 Install virtual display
+      - name: Install Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      # 🔑 Start demo app
       - name: Start demo app
         run: |
           cd demo_app
           nohup python -m http.server 8000 &
           sleep 10
 
-      # 5️⃣ Debug directory structure (keep for safety)
-      - name: Verify project structure
-        run: |
-          echo "Root:"
-          ls -la
-          echo "Tests:"
-          ls -la tests
-          echo "Student management:"
-          ls -la tests/student_management
-
-      # 6️⃣ Run Robot Framework tests
+      # 🔑 Run Robot with virtual display
       - name: Run Robot Framework tests
         run: |
-          robot --outputdir results tests/student_management
+          xvfb-run --auto-servernum \
+            robot --outputdir results tests/student_management
 
-      # 7️⃣ Upload Robot reports
       - name: Upload Robot Framework results
         if: always()
         uses: actions/upload-artifact@v4
