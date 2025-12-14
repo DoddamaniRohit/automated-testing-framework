@@ -23,11 +23,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Start demo app
+           - name: Start demo app
         run: |
           cd demo_app
-          python -m http.server 8000 &
-          sleep 5
+          nohup python -m http.server 8000 &
+          sleep 10
+
 
       - name: Show test directory structure
         run: |
