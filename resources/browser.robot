@@ -2,7 +2,7 @@
 Library    SeleniumLibrary
 
 *** Keywords ***
-Open Browser To Student App
+Open Browser To App
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
     Call Method   ${options}    add_argument    --headless=new
     Call Method   ${options}    add_argument    --no-sandbox
