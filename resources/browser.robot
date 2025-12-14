@@ -1,14 +1,23 @@
 *** Settings ***
 Library    SeleniumLibrary
+Library    OperatingSystem
+Library    Collections
+
+*** Variables ***
+${APP_URL}    http://localhost:8000/student_page.html
 
 *** Keywords ***
 Open Browser To App
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
-    Call Method   ${options}    add_argument    --headless=new
-    Call Method   ${options}    add_argument    --no-sandbox
-    Call Method   ${options}    add_argument    --disable-dev-shm-usage
-    Call Method   ${options}    add_argument    --disable-gpu
-    Call Method   ${options}    add_argument    --window-size=1920,1080
+
+    Call Method    ${options}    add_argument    --headless=new
+    Call Method    ${options}    add_argument    --no-sandbox
+    Call Method    ${options}    add_argument    --disable-dev-shm-usage
+    Call Method    ${options}    add_argument    --disable-gpu
+    Call Method    ${options}    add_argument    --window-size=1920,1080
 
     Create Webdriver    Chrome    options=${options}
-    Go To    http://localhost:8000/student_page.html
+    Go To    ${APP_URL}
+
+Close Browser Session
+    Close All Browsers
