@@ -1,59 +1,76 @@
 import xml.etree.ElementTree as ET
-from collections import Counter
+from collections import defaultdict
 
-# Simple AI-based classification rules
+# AI-style failure pattern knowledge base
 FAILURE_PATTERNS = {
-    "Element not found": ["ElementNotFound", "NoSuchElement", "locator"],
-    "Timeout issue": ["Timeout", "waiting", "timed out"],
-    "Browser issue": ["SessionNotCreated", "WebDriverException"],
-    "Data issue": ["CSV", "invalid", "ValueError"],
-    "Application issue": ["500", "404", "not reachable"]
+    "Element not found": ["element", "locator", "not found", "nosuchelement"],
+    "Timeout issue": ["timeout", "waiting", "timed out"],
+    "Browser issue": ["webdriver", "session", "browser"],
+    "Data issue": ["csv", "invalid", "valueerror"],
+    "Application issue": ["404", "500", "not reachable"]
 }
 
 def classify_failure(message):
+    message = message.lower()
     for category, keywords in FAILURE_PATTERNS.items():
         for keyword in keywords:
-            if keyword.lower() in message.lower():
+            if keyword in message:
                 return category
     return "Unknown issue"
 
-def analyze_robot_results(xml_path="results/output.xml"):
+def identify_application(test_name):
+    """
+    AI logic to identify which application failed
+    """
+    test_name = test_name.lower()
+
+    if "grocery" in test_name or "cart" in test_name or "login" in test_name:
+        return "Grocery Application"
+
+    return "Student Management Application"
+
+def analyze_robot_results(xml_path="output.xml"):
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
-    failures = []
+    analysis = defaultdict(lambda: defaultdict(int))
 
     for test in root.iter("test"):
+        test_name = test.attrib.get("name", "")
         status = test.find("status")
+
         if status is not None and status.attrib.get("status") == "FAIL":
             failure_message = status.text or ""
-            failures.append(classify_failure(failure_message))
-
-    summary = Counter(failures)
+            app = identify_application(test_name)
+            issue = classify_failure(failure_message)
+            analysis[app][issue] += 1
 
     print("\n🤖 AI-BASED TEST FAILURE ANALYSIS")
     print("=" * 40)
 
-    if not summary:
+    if not analysis:
         print("✅ All tests passed. No failures detected.")
         return
 
-    for issue, count in summary.items():
-        print(f"❌ {count} failure(s) due to: {issue}")
+    for app, issues in analysis.items():
+        print(f"\n📌 Application: {app}")
+        for issue, count in issues.items():
+            print(f"❌ {count} failure(s) due to: {issue}")
 
-    print("\n🧠 AI Recommendation:")
-    if "Element not found" in summary:
-        print("- Review UI locators. Possible UI changes detected.")
-    if "Timeout issue" in summary:
-        print("- Increase wait times or check application performance.")
-    if "Browser issue" in summary:
-        print("- Verify browser/driver compatibility.")
-    if "Data issue" in summary:
-        print("- Validate test data inputs.")
-    if "Application issue" in summary:
-        print("- Check application server health.")
+    print("\n🧠 AI Recommendations:")
+    for app, issues in analysis.items():
+        if "Element not found" in issues:
+            print(f"- Review UI locators in {app}")
+        if "Timeout issue" in issues:
+            print(f"- Improve waits or performance checks in {app}")
+        if "Browser issue" in issues:
+            print(f"- Verify browser stability in {app}")
+        if "Data issue" in issues:
+            print(f"- Validate test data used in {app}")
+        if "Application issue" in issues:
+            print(f"- Check server availability for {app}")
 
-    print("\n📌 This analysis helps testers focus on root causes instead of reading raw logs.")
+    print("\n📊 AI-assisted analysis reduces manual debugging effort.")
 
 if __name__ == "__main__":
     analyze_robot_results()
