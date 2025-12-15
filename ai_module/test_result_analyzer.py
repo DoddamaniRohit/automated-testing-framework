@@ -3,12 +3,40 @@ from collections import defaultdict
 
 # AI-style failure pattern knowledge base
 FAILURE_PATTERNS = {
-    "Element not found": ["element", "locator", "not found", "nosuchelement"],
-    "Timeout issue": ["timeout", "waiting", "timed out"],
-    "Browser issue": ["webdriver", "session", "browser"],
-    "Data issue": ["csv", "invalid", "valueerror"],
-    "Application issue": ["404", "500", "not reachable"]
+    "Assertion failure": [
+        "should have been",
+        "but was",
+        "assert",
+        "comparison failed"
+    ],
+    "Element not found": [
+        "element",
+        "locator",
+        "nosuchelement",
+        "not found"
+    ],
+    "Timeout issue": [
+        "timeout",
+        "waiting",
+        "timed out"
+    ],
+    "Browser issue": [
+        "webdriver",
+        "session",
+        "browser"
+    ],
+    "Data issue": [
+        "csv",
+        "invalid",
+        "valueerror"
+    ],
+    "Application issue": [
+        "404",
+        "500",
+        "not reachable"
+    ]
 }
+
 
 def classify_failure(message):
     message = message.lower()
