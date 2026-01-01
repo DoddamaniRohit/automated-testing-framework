@@ -11,4 +11,3 @@ Open Browser To App
 
 Close Browser Session
     Close All Browsers
-
