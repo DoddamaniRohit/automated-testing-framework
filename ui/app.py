@@ -14,6 +14,13 @@ st.set_page_config(
 )
 
 # -----------------------------
+# HELPER: DETECT STREAMLIT CLOUD
+# -----------------------------
+def is_streamlit_cloud():
+    # This env var exists on Streamlit Community Cloud
+    return os.environ.get("STREAMLIT_SERVER_RUNNING") == "1"
+
+# -----------------------------
 # CUSTOM CSS
 # -----------------------------
 st.markdown("""
@@ -56,8 +63,14 @@ st.sidebar.info("Robot Framework + CI/CD + AI")
 # -----------------------------
 # HEADER
 # -----------------------------
-st.markdown('<div class="big-title">🤖 Intelligent CI/CD Oriented Automated Testing Framework</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-text">Automated execution, intelligent failure detection, and CI/CD readiness</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="big-title">🤖 Intelligent CI/CD Oriented Automated Testing Framework</div>',
+    unsafe_allow_html=True
+)
+st.markdown(
+    '<div class="sub-text">Automated execution, intelligent failure detection, and CI/CD readiness</div>',
+    unsafe_allow_html=True
+)
 
 st.markdown("---")
 
@@ -94,7 +107,7 @@ if menu == "Dashboard":
         </div>
         """, unsafe_allow_html=True)
 
-    st.success("Framework is ready for execution 🚀")
+    st.success("Framework is ready for demonstration 🚀")
 
 # =============================
 # RUN TESTS
@@ -102,27 +115,40 @@ if menu == "Dashboard":
 elif menu == "Run Tests":
     st.subheader("🧪 Test Execution")
 
+    if is_streamlit_cloud():
+        st.warning(
+            "⚠ Test execution is disabled on Streamlit Cloud.\n\n"
+            "Robot Framework tests are executed via local machine or CI/CD pipelines "
+            "(Jenkins / GitHub Actions)."
+        )
+
     col1, col2 = st.columns(2)
 
     with col1:
         st.markdown("### 🎓 Student Management System")
         if st.button("▶ Run Tests", use_container_width=True):
-            with st.spinner("Executing Student Management tests..."):
-                subprocess.run(
-                    ["robot", "--outputdir", "results", "tests/student_management"],
-                    shell=True
-                )
-            st.success("Student Management tests completed")
+            if is_streamlit_cloud():
+                st.info("Demo mode: Run tests locally or via CI/CD pipeline.")
+            else:
+                with st.spinner("Executing Student Management tests..."):
+                    subprocess.run(
+                        ["robot", "--outputdir", "results", "tests/student_management"],
+                        shell=True
+                    )
+                st.success("Student Management tests completed")
 
     with col2:
         st.markdown("### 🛒 Grocery Application")
         if st.button("▶ Run Tests ", use_container_width=True):
-            with st.spinner("Executing Grocery App tests..."):
-                subprocess.run(
-                    ["robot", "--outputdir", "results", "tests/grocery_app"],
-                    shell=True
-                )
-            st.success("Grocery App tests completed")
+            if is_streamlit_cloud():
+                st.info("Demo mode: Run tests locally or via CI/CD pipeline.")
+            else:
+                with st.spinner("Executing Grocery App tests..."):
+                    subprocess.run(
+                        ["robot", "--outputdir", "results", "tests/grocery_app"],
+                        shell=True
+                    )
+                st.success("Grocery App tests completed")
 
 # =============================
 # AI FAILURE ANALYSIS
@@ -133,27 +159,53 @@ elif menu == "AI Failure Analysis":
     st.info("AI scans Robot Framework logs and identifies failure patterns")
 
     if st.button("🔍 Run AI Analysis", use_container_width=True):
-        with st.spinner("Analyzing test results using AI..."):
-            result = subprocess.run(
-                [sys.executable, "ai_module/test_result_analyzer.py"],
-                capture_output=True,
-                text=True
+
+        # -------- CLOUD MODE --------
+        if is_streamlit_cloud():
+            st.warning(
+                "⚠ AI analysis requires Robot Framework output files.\n\n"
+                "On Streamlit Cloud, system-level execution is restricted.\n\n"
+                "This section demonstrates the AI analysis capability."
             )
 
-        if result.returncode == 0:
-            st.success("AI Analysis Completed Successfully")
             st.text_area(
-                "📊 Intelligent Analysis Output",
-                result.stdout,
-                height=400
+                "📊 Sample AI Analysis Output (Demo Mode)",
+                """Detected Failure Patterns:
+- Login test failed due to invalid credentials
+- Root Cause: Incorrect test data mapping
+- Impact: Authentication module
+- Suggested Fix: Verify credentials in test data file
+
+CI/CD Recommendation:
+- Add pre-validation for test data
+- Enable retry logic for flaky tests
+                """,
+                height=300
             )
+
+        # -------- LOCAL MODE --------
         else:
-            st.error("AI Analyzer failed")
-            st.text_area(
-                "❌ Error Output",
-                result.stderr,
-                height=250
-            )
+            with st.spinner("Analyzing test results using AI..."):
+                result = subprocess.run(
+                    [sys.executable, "ai_module/test_result_analyzer.py"],
+                    capture_output=True,
+                    text=True
+                )
+
+            if result.returncode == 0:
+                st.success("AI Analysis Completed Successfully")
+                st.text_area(
+                    "📊 Intelligent Analysis Output",
+                    result.stdout,
+                    height=400
+                )
+            else:
+                st.error("AI Analyzer failed")
+                st.text_area(
+                    "❌ Error Output",
+                    result.stderr,
+                    height=250
+                )
 
 # =============================
 # REPORTS
@@ -163,6 +215,12 @@ elif menu == "Reports":
 
     report_path = "results/report.html"
     log_path = "results/log.html"
+
+    if is_streamlit_cloud():
+        st.info(
+            "Reports are generated during local or CI/CD test execution.\n\n"
+            "Download is available when artifacts exist."
+        )
 
     col1, col2 = st.columns(2)
 
