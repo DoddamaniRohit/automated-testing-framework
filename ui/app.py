@@ -14,12 +14,6 @@ st.set_page_config(
 )
 
 # -----------------------------
-# HELPER: CHECK ROBOT OUTPUT
-# -----------------------------
-def robot_output_exists():
-    return os.path.exists("results/output.xml")
-
-# -----------------------------
 # CUSTOM CSS
 # -----------------------------
 st.markdown("""
@@ -62,14 +56,8 @@ st.sidebar.info("Robot Framework + CI/CD + AI")
 # -----------------------------
 # HEADER
 # -----------------------------
-st.markdown(
-    '<div class="big-title">🤖 Intelligent CI/CD Oriented Automated Testing Framework</div>',
-    unsafe_allow_html=True
-)
-st.markdown(
-    '<div class="sub-text">Automated execution, intelligent failure detection, and CI/CD readiness</div>',
-    unsafe_allow_html=True
-)
+st.markdown('<div class="big-title">🤖 Intelligent CI/CD Oriented Automated Testing Framework</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-text">Automated execution, intelligent failure detection, and CI/CD readiness</div>', unsafe_allow_html=True)
 
 st.markdown("---")
 
@@ -100,13 +88,13 @@ if menu == "Dashboard":
     with col3:
         st.markdown("""
         <div class="card">
-            <h4>🧠 AI Analysis</h4>
+            <h4>🧠 Intelligent System Analysis</h4>
             <p>Failure Pattern Detection</p>
             <p>Root Cause Insights</p>
         </div>
         """, unsafe_allow_html=True)
 
-    st.success("Framework is ready for demonstration 🚀")
+    st.success("Framework is ready for execution")
 
 # =============================
 # RUN TESTS
@@ -114,82 +102,56 @@ if menu == "Dashboard":
 elif menu == "Run Tests":
     st.subheader("🧪 Test Execution")
 
-    st.warning(
-        "⚠ Test execution is disabled on cloud deployment.\n\n"
-        "Robot Framework tests are executed locally or via CI/CD pipelines "
-        "(Jenkins / GitHub Actions)."
-    )
-
     col1, col2 = st.columns(2)
 
     with col1:
         st.markdown("### 🎓 Student Management System")
         if st.button("▶ Run Tests", use_container_width=True):
-            st.info("Demo mode: Run tests locally or via CI/CD pipeline.")
+            with st.spinner("Executing Student Management tests..."):
+                subprocess.run(
+                    ["robot", "--outputdir", "results", "tests/student_management"],
+                    shell=True
+                )
+            st.success("Student Management tests completed")
 
     with col2:
         st.markdown("### 🛒 Grocery Application")
         if st.button("▶ Run Tests ", use_container_width=True):
-            st.info("Demo mode: Run tests locally or via CI/CD pipeline.")
+            with st.spinner("Executing Grocery App tests..."):
+                subprocess.run(
+                    ["robot", "--outputdir", "results", "tests/grocery_app"],
+                    shell=True
+                )
+            st.success("Grocery App tests completed")
 
-# =============================
-# AI FAILURE ANALYSIS
-# =============================
+
 elif menu == "AI Failure Analysis":
     st.subheader("🧠 Intelligent Failure Analysis")
 
     st.info("AI scans Robot Framework logs and identifies failure patterns")
 
     if st.button("🔍 Run AI Analysis", use_container_width=True):
-
-        # -------- DEMO MODE (NO output.xml) --------
-        if not robot_output_exists():
-            st.warning(
-                "⚠ Robot Framework output not found.\n\n"
-                "This application is running in demo / cloud mode.\n\n"
-                "In real CI/CD pipelines, tests are executed first and the "
-                "generated output.xml is analyzed by the AI module."
+        with st.spinner("Analyzing test results using AI..."):
+            result = subprocess.run(
+                [sys.executable, "ai_module/test_result_analyzer.py"],
+                capture_output=True,
+                text=True
             )
 
+        if result.returncode == 0:
+            st.success("AI Analysis Completed Successfully")
             st.text_area(
-                "📊 Sample AI Analysis Output (Demo Mode)",
-                """Detected Failure Patterns:
-- Login test failed due to invalid credentials
-- Root Cause: Incorrect test data mapping
-- Impacted Module: Authentication
-- Severity: High
-
-AI Recommendations:
-- Validate credentials before execution
-- Add retry logic for flaky tests
-- Archive test artifacts in CI/CD pipeline
-                """,
-                height=320
+                "📊 Intelligent Analysis Output",
+                result.stdout,
+                height=400
             )
-
-        # -------- REAL MODE (LOCAL / CI) --------
         else:
-            with st.spinner("Analyzing test results using AI..."):
-                result = subprocess.run(
-                    [sys.executable, "ai_module/test_result_analyzer.py"],
-                    capture_output=True,
-                    text=True
-                )
-
-            if result.returncode == 0:
-                st.success("AI Analysis Completed Successfully")
-                st.text_area(
-                    "📊 Intelligent Analysis Output",
-                    result.stdout,
-                    height=400
-                )
-            else:
-                st.error("AI Analyzer failed")
-                st.text_area(
-                    "❌ Error Output",
-                    result.stderr,
-                    height=250
-                )
+            st.error("AI Analyzer failed")
+            st.text_area(
+                "❌ Error Output",
+                result.stderr,
+                height=250
+            )
 
 # =============================
 # REPORTS
@@ -199,11 +161,6 @@ elif menu == "Reports":
 
     report_path = "results/report.html"
     log_path = "results/log.html"
-
-    st.info(
-        "Reports are generated during local or CI/CD test execution.\n\n"
-        "Download is available when artifacts exist."
-    )
 
     col1, col2 = st.columns(2)
 
